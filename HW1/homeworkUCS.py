@@ -110,7 +110,7 @@ def uniformCostSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, heigh
         closed_map = {}
         children_map = {}
         parent = {}
-        parent[(str(start_X) + str(start_Y))] = None
+        parent[(str(start_X) + str(start_Y))] = ""
         open.put((0, start_X, start_Y))
         open_map[str(start_X) + str(start_Y)] = 0
         visited[str(start_X) + str(start_Y)] = 0
@@ -130,8 +130,9 @@ def uniformCostSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, heigh
             if tuple((currNode[1], currNode[2])) == lodge:
                 print(currNode)
                 print("YAAAAAAAAAAAAAAYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-                printInFileUCS(parent, currNode[1], currNode[2])
-                continue
+                print(str(currNode[1]), str(currNode[2]), "565656565656656565")
+                printInFileUCS(parent, str(currNode[1]) + str(currNode[2]))
+                break
 
             children = PriorityQueue()
             expandUCS(children, currNode[0], currNode[1], currNode[2], visited, height, width, mtrx, stamina, children_map, parent)
@@ -169,22 +170,22 @@ def uniformCostSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, heigh
             print("-------------------------------------------------------------")
         print(parent)
 
-def printInFileUCS(parent, X, Y):
-
-    print("[][][][][]", parent)
+def printInFileUCS(parent, key):
 
     stack = []
+    stack.append(key)
+    while len(parent[key]):
+        stack.append(parent[key])
+        key = parent[key]
 
-    fp = open('output.txt', 'a')
-
-    while parent[str(X) + str(Y)] != None:
-        print([str(X) + str(Y)], ":", parent[str(X) + str(Y)], "->", stack)    
-        stack.append(str(Y) + "," + str(X) + " ")
-        X = parent[str(X) + str(Y)][0]
-        Y = parent[str(X) + str(Y)][1]
-
-    while stack:
-        fp.write(stack.pop())
+    fp = open("output.txt", "a")
+    pth = ""
+    while(stack):
+        temp = stack.pop()
+        pth = pth + temp[1] + "," + temp[0] + " "
+    
+    fp.write(pth.strip() + "\n")
+    print(stack)
 
 if __name__ == "__main__":
     main()
