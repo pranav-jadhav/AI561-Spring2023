@@ -65,10 +65,14 @@ def printInFile(path, node):
         node = path[node]
     stack.append(path[stack[len(stack) - 1]])
     
-    fp = open('output.txt', 'a')
+    pth = ""
+    
     while stack:
         node = stack.pop()
-        fp.write(str(node[0]) + "," + str(node[1]) + " ")
+        pth += str(node[0]) + "," + str(node[1]) + " "
+    
+    fp = open('output.txt', 'a')    
+    fp.write(pth.strip + "\n")
 
 def expand(queue, height, width, X, Y, mtrx, stamina, visited, path):
     if isValid(height, width, X-1, Y, mtrx, stamina, X, Y) and not isVisitedBFS(X-1, Y, visited):    # North
