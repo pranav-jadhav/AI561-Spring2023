@@ -9,19 +9,25 @@ def isVisited(visited, X, Y):
     return False
 
 def calcMomemtum(prev_X, prev_Y, curr_X, curr_Y, mtrx):
-    return max(0, (mtrx[int(prev_X)][int(prev_Y)] - mtrx[curr_X][curr_Y]))
+    print("M:", (abs(mtrx[int(prev_X)][int(prev_Y)]) - abs(mtrx[curr_X][curr_Y])))
+    return max(0, (abs(mtrx[int(prev_X)][int(prev_Y)]) - abs(mtrx[curr_X][curr_Y])))
 
 def allowedMoves(Momentum, curr_X, curr_Y, next_X, next_Y, mtrx, stamina, height, width):
-    if next_X < 0 or next_X > height or next_Y < 0 or next_Y > width:
+    print("Inside AllowedMoves: ", curr_X, curr_Y, next_X, next_Y, mtrx[curr_X][curr_Y])
+    if next_X < 0 or next_X >= height or next_Y < 0 or next_Y >= width:
+        print("11111111111111111")
         return False
 
-    if mtrx[next_X][next_Y] < 0 and mtrx[next_X][next_Y] > mtrx[curr_X][curr_Y]:
+    if (mtrx[next_X][next_Y]) < 0 and abs(mtrx[next_X][next_Y]) > abs(mtrx[curr_X][curr_Y]):
+        print("222222222222222222")
         return False
 
     elev_next = abs(mtrx[next_X][next_Y])
 
-    if (elev_next < mtrx[curr_X][curr_Y]) or (elev_next <= mtrx[curr_X][curr_Y] + stamina + Momentum):
+    if (elev_next < abs(mtrx[curr_X][curr_Y])) or (elev_next <= abs(mtrx[curr_X][curr_Y]) + stamina + Momentum):
+        print("989898989898989898")
         return True
+    print("333333333333333")
     return False 
 
 def heuristic(curr_X, curr_Y, lodge_X, lodge_Y):
@@ -29,7 +35,8 @@ def heuristic(curr_X, curr_Y, lodge_X, lodge_Y):
 
 def removeFromopen_queue(open_queue, X, Y):
     temp = []
-    for node in open_queue:
+    while not open_queue.empty():
+        node = open_queue.get()
         if node[2][0] == X and node[2][1] == Y:
             break
         temp.append(node)
@@ -39,8 +46,8 @@ def removeFromopen_queue(open_queue, X, Y):
 
 def expandAS(X, Y, mtrx, height, width, stamina, visited, open_queue, open_queue_list, parent_cost, lodge, parent):
     step_cost = 10
+    print("stamina", stamina)
     if allowedMoves(calcMomemtum(parent[str(X) + str(Y)][0], parent[str(X) + str(Y)][1], X, Y, mtrx), X, Y, X-1, Y, mtrx, stamina, height, width) and not isVisited(visited, X-1, Y):   # North
-        print("/-/-/-/-/-/-/--/-/-/-/-/-/-/")
         if not isVisited(open_queue_list, X-1, Y):
             open_queue.put((parent_cost + heuristic(X-1, Y, lodge[1], lodge[0]) + step_cost, parent_cost + 10, (X-1, Y)))
             open_queue_list[str(X-1) + str(Y)] = parent_cost + step_cost
@@ -57,6 +64,7 @@ def expandAS(X, Y, mtrx, height, width, stamina, visited, open_queue, open_queue
             open_queue_list[str(X) + str(Y+1)] = parent_cost + step_cost
             parent[str(X) + str(Y+1)] = str(X) + str(Y)
         elif open_queue_list[str(X) + str(Y+1)] > parent_cost + step_cost:
+            print("/-/-/-/-/-/-/--/-/-/-/-/-/-/")
             removeFromopen_queue(open_queue, X, Y+1)
             open_queue.put((parent_cost + heuristic(X, Y+1, lodge[1], lodge[0]) + step_cost, parent_cost + 10, (X, Y+1)))
             open_queue_list[str(X) + str(Y+1)] = parent_cost + step_cost
@@ -130,9 +138,10 @@ def expandAS(X, Y, mtrx, height, width, stamina, visited, open_queue, open_queue
             parent[str(X-1) + str(Y-1)] = str(X) + str(Y)
 
 def printInFile(key, parent):
+    print("Parent:", parent)
     stack = []
     stack.append(key)
-    while len(parent[key]):
+    while not (parent[key] == key):
         stack.append(parent[key])
         key = parent[key]
 
@@ -166,11 +175,12 @@ def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, widt
         while not open_queue.empty():
             currNode = open_queue.get()
             del open_queue_list[str(currNode[2][0]) + str(currNode[2][1])]
-            print("CurrNode:", currNode)
+            print("CurrNode:", currNode, "Lodge:", lodge)
 
-            if currNode[2] == lodge:
-                printInFile(str(lodge[0]) + str(lodge[1]), parent)
+            if (currNode[2][0] == lodge[1]) and currNode[2][1] == lodge[0]:
+                printInFile(str(lodge[1]) + str(lodge[0]), parent)
                 return
+
             print("Before Expanding:", open_queue_list)
             expandAS(currNode[2][0], currNode[2][1], mtrx, height, width, stamina, visited, open_queue, open_queue_list, currNode[1], lodge, parent)
             print("After Expanding: ", open_queue_list)
@@ -178,12 +188,11 @@ def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, widt
             print("Visted:", visited)
             close.put(currNode) 
             close_list[str(currNode[2][0]) + str(currNode[2][1])] = currNode[1]
-            print("close:", close)
+            print("close:", close_list)
             print("----------------------------------------------------------------------------------------------------------------------------------------------")
 
         fp = open("output.txt", 'a')
         fp.write("FAIL\n")
-
 
 # Common Functions
 
