@@ -157,6 +157,7 @@ def uniformCostSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, heigh
                 elif isPresent((str(child[1]) + str(child[2])), closed_map):
                     if closed_map[str(child[1]) + str(child[2])] > child[0]:
                         deleteNode(close, child[1], child[2])
+                        del closed_map[str(child[1]) + str(child[2])]
                         open.put(child)
                         open_map[str(child[1]) + str(child[2])] = child[0]
                         parent[str(child[1]) + str(child[2])] = str(currNode[1]) + str(currNode[2])
