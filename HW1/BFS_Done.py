@@ -8,11 +8,11 @@ def isVisitedBFS(X, Y, visited):
         return True
     return False
 
-def printInFile2(res):
+def printInFileBFS2(res):
     fp = open("output.txt", 'a')
     fp.write(res.strip() + "\n")
 
-def printInFile(visited, node):
+def printInFileBFS(visited, node):
     fp = open("output.txt", 'a')
     res = ""
     stack = []
@@ -29,7 +29,6 @@ def printInFile(visited, node):
     
     fp.write("\n")
     
-
 def expand(queue, height, width, X, Y, mtrx, stamina, visited):
     if isValid(height, width, X-1, Y, mtrx, stamina, X, Y) and not isVisitedBFS(X-1, Y, visited):    # North
         queue.append(tuple((X-1, Y)))
@@ -69,9 +68,10 @@ def breadthFirstSearch(start_Y, start_X, stamina, lodges_coordinates, mtrx, heig
 
         for lodge in lodges_coordinates:
             if (lodge[1], lodge[0]) in visited.keys():
-                printInFile(visited, (lodge[1], lodge[0]))
+                printInFileBFS(visited, (lodge[1], lodge[0]))
             else:
-                printInFile2("FAIL")  
+                printInFileBFS2("FAIL")  
+
 # USC Functions
 
 def deleteNode(open_queue, X, Y):
@@ -144,7 +144,7 @@ def uniformCostSearch(start_Y, start_X, stamina, lodges_coordinates, mtrx, heigh
             del open_queue_map[(str(currNode[1]) + str(currNode[2]))]
 
             if tuple((currNode[1], currNode[2])) == lodge:
-                printInFileUCS(parent, str(currNode[1]) + str(currNode[2]))
+                printInFileBFSUCS(parent, str(currNode[1]) + str(currNode[2]))
                 break
 
             children = PriorityQueue()
@@ -179,7 +179,7 @@ def uniformCostSearch(start_Y, start_X, stamina, lodges_coordinates, mtrx, heigh
         fp = open("output.txt", 'a')
         fp.write("FAIL\n")
 
-def printInFileUCS(parent, key):
+def printInFileBFSUCS(parent, key):
 
     stack = []
     stack.append(key)
