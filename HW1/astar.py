@@ -150,12 +150,18 @@ def printInFile(key, parent):
     while(stack):
         temp = stack.pop()
         pth = pth + temp[1] + "," + temp[0] + " "
+
+    print(pth)
     
     fp.write(pth.strip() + "\n")
 
+def printInFile2():
+    fp = open("output.txt", 'a')
+    fp.write("FAIL\n")
+
 def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, width):
     for lodge in lodge_coordinates:
-        
+        flag = 1
         parent = {}
 
         open_queue = PriorityQueue()
@@ -179,7 +185,8 @@ def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, widt
 
             if (currNode[2][0] == lodge[1]) and currNode[2][1] == lodge[0]:
                 printInFile(str(lodge[1]) + str(lodge[0]), parent)
-                return
+                flag = 0
+                break
 
             print("Before Expanding:", open_queue_list)
             expandAS(currNode[2][0], currNode[2][1], mtrx, height, width, stamina, visited, open_queue, open_queue_list, currNode[1], lodge, parent)
@@ -191,8 +198,8 @@ def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, widt
             print("close:", close_list)
             print("----------------------------------------------------------------------------------------------------------------------------------------------")
 
-        fp = open("output.txt", 'a')
-        fp.write("FAIL\n")
+        if flag == 1:
+            printInFile2()
 
 # Common Functions
 
@@ -237,13 +244,9 @@ def main():
 
     fp = open('output.txt', 'w')
 
-    if algorithm == "BFS":
-        breadthFirstSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, height, width)
-    elif algorithm == "UCS":
-        uniformCostSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, height, width)
-    else:
+    if algorithm == "A*":
+        print("*********")
         aStarSearch(start_X, start_Y, stamina, lodges_coordinates, mtrx, height, width)
-
 
 if __name__ == "__main__":
     main()
