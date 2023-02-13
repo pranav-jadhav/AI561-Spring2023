@@ -1,4 +1,3 @@
-import math
 from queue import PriorityQueue
 # A* Functions
 
@@ -31,7 +30,7 @@ def allowedMoves(Momentum, curr_X, curr_Y, next_X, next_Y, mtrx, stamina, height
     return False 
 
 def heuristic(curr_X, curr_Y, lodge_X, lodge_Y):
-    return math.sqrt(pow(curr_X - lodge_X, 2) + pow(curr_Y - lodge_Y, 2))
+    return(pow(curr_X - lodge_X, 2) + pow(curr_Y - lodge_Y, 2))
 
 def removeFromopen_queue(open_queue, X, Y):
     temp = []
@@ -173,31 +172,22 @@ def aStarSearch(start_X, start_Y, stamina, lodge_coordinates, mtrx, height, widt
         visited = {}
 
         open_queue.put((0 + heuristic(start_X, start_Y, lodge[1], lodge[0]), 0, (start_Y, start_X)))
-        open_queue_list[str(start_Y) + str(start_X)] = 0
         parent[str(start_Y) + str(start_X)] = str(start_Y) + str(start_X)
-
-        print((0 + heuristic(start_X, start_Y, lodge[1], lodge[0]), 0, (start_Y, start_X)))
 
         while not open_queue.empty():
             currNode = open_queue.get()
             del open_queue_list[str(currNode[2][0]) + str(currNode[2][1])]
-            print("CurrNode:", currNode, "Lodge:", lodge)
 
             if (currNode[2][0] == lodge[1]) and currNode[2][1] == lodge[0]:
                 printInFile(str(lodge[1]) + str(lodge[0]), parent)
                 flag = 0
                 break
 
-            print("Before Expanding:", open_queue_list)
             expandAS(currNode[2][0], currNode[2][1], mtrx, height, width, stamina, visited, open_queue, open_queue_list, currNode[1], lodge, parent)
-            print("After Expanding: ", open_queue_list)
             visited[str(currNode[2][0]) + str(currNode[2][1])] = currNode[1]
-            print("Visted:", visited)
             close.put(currNode) 
             close_list[str(currNode[2][0]) + str(currNode[2][1])] = currNode[1]
-            print("close:", close_list)
-            print("----------------------------------------------------------------------------------------------------------------------------------------------")
-
+            
         if flag == 1:
             printInFile2()
 
